@@ -6,9 +6,9 @@ questions are yes/no: *does this request need a brightness change?* Some are cho
 outside it?* Others ask for a number (*how much brighter?*) or a box (*where is the subject?*). The model never
 writes free text and never touches pixels. It answers the questions, and deterministic code applies the edit.
 
-- **Qwen3.5-9B** (bf16, unmodified weights, no training, RLHF or calibration) scores the candidate answers. The
-  engine is a PyTorch port of [jev-visual](https://github.com/hr98w/jev-visual): the image and context are
-  prefilled once, and every question branches from that cache.
+- **Qwen3.5-9B**, turned into a Jev-style judgment engine. The weights are used as released (bf16) with no
+  training, RLHF or calibration. The model never generates an answer; it scores the candidate answers. The
+  image and context are prefilled once, and every question branches from that cache.
 - **jev-numeric** provides the `number` type. A value on a grid `[lower, upper)` with a given resolution is found
   by repeatedly splitting the current interval and choosing the part that holds it. The editor uses a variant
   that makes each choice at the model's own answer position, one digit at a time
@@ -79,7 +79,7 @@ photo (a ≤1024 px copy) + request  ─►  vision encoder + prefill, once
 
 | Question type | Answer | How it is read |
 |---|---|---|
-| `choice`, `noul` (yes/no), `score` | option probabilities | logits of lettered options, as in jev-visual |
+| `choice`, `noul` (yes/no), `score` | option probabilities | logits of lettered options |
 | `number`, `decoding="interval"` (default) | value on the grid | **jev-numeric**: pick one of K sub-intervals per round (K = 10 by default) |
 | `number`, `decoding="digits"` | value on the grid | constrained walk over sign / digits / `.` / end at the answer position, then snapped to the grid |
 | `box` | `bbox_2d` on a 0–1000 scale | the same walk inside Qwen's native `{"bbox_2d": [` format |
@@ -181,7 +181,7 @@ image together with the gates, amounts, boxes and timings.
 
 ## Credits
 
-Code ported from [jev-visual](https://github.com/hr98w/jev-visual) (MIT) and the interval algorithm from
-[jev-numeric](https://github.com/Bring-AI/jev-numeric) (MIT). See [THIRD_PARTY.md](THIRD_PARTY.md). Photo sources
+The interval algorithm comes from [jev-numeric](https://github.com/Bring-AI/jev-numeric) (MIT). Third-party
+code notices are listed in [THIRD_PARTY.md](THIRD_PARTY.md). Photo sources
 and CC0 licenses are listed in [examples/photos/SOURCES.md](examples/photos/SOURCES.md). No license has been
 chosen for this repository's own code yet.

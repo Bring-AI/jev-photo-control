@@ -1,5 +1,9 @@
 # Third-party code
 
+This project as a whole is licensed under the PolyForm Noncommercial License 1.0.0 (see `LICENSE.md`). The
+portions listed below were adapted from MIT-licensed projects; their original copyright and permission notices
+are reproduced in `third_party/` and continue to apply to those portions.
+
 - **jev-visual** (MIT, © 2026 Jev Visual contributors, https://github.com/hr98w/jev-visual):
   prompt construction, candidate tokenization checks, label / single-token / sequence scoring,
   typed answer assembly and the shared-prefix design were ported from its MLX implementation to

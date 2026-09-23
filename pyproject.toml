@@ -7,6 +7,7 @@ name = "jev-photo-control"
 version = "0.1.0"
 description = "Local Jev-like visual judgments (Qwen3.5-9B, CUDA) with a number type and a Jev-driven photo editor"
 requires-python = ">=3.11"
+license = {file = "LICENSE.md"}
 dependencies = ["torch", "transformers>=5.17", "accelerate", "flash-linear-attention", "fastapi", "uvicorn",
                 "pillow>=10.1", "numpy", "pydantic>=2"]
 

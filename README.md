@@ -182,6 +182,15 @@ image together with the gates, amounts, boxes and timings.
 ## Credits
 
 The interval algorithm comes from [jev-numeric](https://github.com/Bring-AI/jev-numeric) (MIT). Third-party
-code notices are listed in [THIRD_PARTY.md](THIRD_PARTY.md). Photo sources
-and CC0 licenses are listed in [examples/photos/SOURCES.md](examples/photos/SOURCES.md). No license has been
-chosen for this repository's own code yet.
+code notices are listed in [THIRD_PARTY.md](THIRD_PARTY.md). Photo sources and CC0 licenses are listed in
+[examples/photos/SOURCES.md](examples/photos/SOURCES.md).
+
+## License
+
+This project is released under the **[PolyForm Noncommercial License 1.0.0](LICENSE.md)**. You may use, modify
+and share it for noncommercial purposes, such as personal projects, research, education, and use by charities
+or public institutions. **Commercial use is not permitted.** For commercial licensing, open an issue.
+
+Third-party portions keep their own licenses: code adapted from MIT-licensed projects is listed in
+[THIRD_PARTY.md](THIRD_PARTY.md), and the example photos are CC0. The Qwen3.5-9B weights are not included and
+are governed by their own license (Apache-2.0).

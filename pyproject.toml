@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jev-photo-control"
+version = "0.1.0"
+description = "Local Jev-like visual judgments (Qwen3.5-9B, CUDA) with a number type and a Jev-driven photo editor"
+requires-python = ">=3.11"
+dependencies = ["torch", "transformers>=5.17", "accelerate", "flash-linear-attention", "fastapi", "uvicorn",
+                "pillow>=10.1", "numpy", "pydantic>=2"]
+
+[project.optional-dependencies]
+test = ["pytest", "httpx"]
+
+[project.scripts]
+jev-photo-server = "jev_photo.server:main"
+
+[tool.setuptools.packages.find]
+include = ["jev_photo*"]
+
+[tool.setuptools.package-data]
+jev_photo = ["static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

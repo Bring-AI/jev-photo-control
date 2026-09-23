@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jev Photo Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 18% gray card: the neutral reference photographers judge exposure and color against. */
+  --card: #7b7b78;
+  --card-deep: #6c6c69;
+  --paper: #ecece8;
+  --paper-2: #e2e2dd;
+  --ink: #19191b;
+  --muted: #5b5b58;
+  --rule: #c6c6c0;
+  --signal: #d6782a;   /* ColorChecker "orange" patch */
+  --signal-ink: #1a1206;
+  --cool: #3f5ea8;     /* ColorChecker "blue" patch */
+  --font-label: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #1c1c1e; --paper-2: #26262a; --ink: #ececea; --muted: #a2a29e; --rule: #3a3a3e;
+    --signal-ink: #1a1206; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.55 var(--font-body); }
+button, textarea, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+
+header {
+  display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+  padding: 14px clamp(16px, 3vw, 32px); border-bottom: 1px solid var(--rule);
+}
+header h1 { margin: 0; font: 600 20px/1 var(--font-label); letter-spacing: .02em; }
+header p { margin: 0; color: var(--muted); font-size: 13px; }
+#status { margin-left: auto; font: 12px/1 var(--font-mono); color: var(--muted); }
+#status.ready::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: #4f9a58; margin-right: 6px; vertical-align: 1px; }
+
+main {
+  display: grid; grid-template-columns: minmax(0, 1fr) 340px; min-height: calc(100vh - 50px);
+}
+@media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+
+/* ---------- stage ---------- */
+.stage {
+  background: var(--card); padding: clamp(16px, 3vw, 36px); display: flex; flex-direction: column; gap: 14px;
+}
+.drop {
+  flex: 1; min-height: 360px; display: grid; place-items: center; text-align: center; cursor: pointer;
+  border: 1.5px dashed rgba(255,255,255,.55); color: #f3f3f0; border-radius: 4px; padding: 24px;
+}
+.drop:hover, .drop.over { background: var(--card-deep); }
+.drop strong { display: block; font: 600 22px/1.3 var(--font-label); margin-bottom: 6px; }
+.drop span { font-size: 13px; opacity: .85; }
+.compare { position: relative; align-self: center; max-width: 100%; user-select: none; touch-action: none; }
+.compare img { display: block; max-width: 100%; max-height: calc(100vh - 210px); }
+.compare .after { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+  clip-path: inset(0 0 0 var(--split, 50%)); }
+.compare .handle { position: absolute; top: 0; bottom: 0; left: var(--split, 50%); width: 2px; background: #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.25); pointer-events: none; }
+.compare .handle::after { content: "⟷"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: #fff; color: #222; border-radius: 50%; width: 30px; height: 30px; display: grid; place-items: center;
+  font-size: 15px; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+.compare input[type=range] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+.compare .tag { position: absolute; top: 10px; font: 600 11px/1 var(--font-label); letter-spacing: .08em;
+  text-transform: uppercase; color: #fff; background: rgba(0,0,0,.45); padding: 5px 7px; border-radius: 2px; }
+.compare .tag.l { left: 10px; } .compare .tag.r { right: 10px; }
+.compare .pane { position: relative; }
+.compare svg.boxes { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* Crop / rotation change the aspect ratio: compare side by side instead of with a split. */
+.compare.side { display: flex; gap: 12px; align-items: flex-start; }
+.compare.side .pane, .compare.side .after { flex: 1 1 0; min-width: 0; }
+.compare.side img { max-height: calc(100vh - 230px); }
+.compare.side .after { position: static; clip-path: none; width: 100%; height: auto; }
+.compare.side .tag.r { right: 10px; }
+.stage-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; color: #f3f3f0; font-size: 13px; }
+.on-card { background: transparent; color: #f3f3f0; border-color: rgba(255,255,255,.5); padding: 4px 10px; cursor: pointer; }
+.on-card:hover { background: var(--card-deep); }
+.stage-bar label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+
+.history { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+.history button { flex: none; border: 2px solid transparent; padding: 0; background: none; cursor: pointer;
+  border-radius: 3px; position: relative; }
+.history button.on { border-color: var(--signal); }
+.history img { display: block; height: 54px; border-radius: 1px; }
+.history span { position: absolute; left: 3px; bottom: 3px; font: 10px/1 var(--font-mono); color: #fff;
+  background: rgba(0,0,0,.55); padding: 2px 4px; border-radius: 2px; }
+
+/* ---------- side panel ---------- */
+aside { padding: 22px; display: flex; flex-direction: column; gap: 18px; border-left: 1px solid var(--rule);
+  overflow-y: auto; max-height: calc(100vh - 50px); }
+@media (max-width: 900px) { aside { max-height: none; border-left: 0; } }
+.label { font: 600 12px/1 var(--font-label); letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+  margin: 0 0 8px; }
+textarea { width: 100%; min-height: 84px; resize: vertical; padding: 10px 12px; border: 1px solid var(--rule);
+  background: var(--paper-2); border-radius: 3px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chips button { border: 1px solid var(--rule); background: transparent; padding: 4px 10px; border-radius: 14px;
+  font-size: 13px; cursor: pointer; }
+.chips button:hover { border-color: var(--ink); }
+.primary { width: 100%; border: 0; background: var(--signal); color: var(--signal-ink); padding: 11px;
+  font: 600 16px/1 var(--font-label); letter-spacing: .03em; border-radius: 3px; cursor: pointer; }
+.primary:disabled { opacity: .55; cursor: progress; }
+.secondary { display: inline-block; text-align: center; border: 1px solid var(--rule); padding: 8px; border-radius: 3px;
+  text-decoration: none; color: inherit; font-size: 14px; }
+.note { font-size: 13px; color: var(--muted); margin: 0; }
+.error { color: #b3261e; font-size: 14px; margin: 0; }
+
+/* ---------- decisions ---------- */
+.decisions { display: flex; flex-direction: column; gap: 18px; }
+.gates { display: grid; grid-template-columns: 5.5em 1fr 3em; gap: 5px 8px; align-items: center; font-size: 13px; }
+.gates .bar { position: relative; height: 8px; background: var(--paper-2); border-radius: 1px; }
+.gates .bar i { position: absolute; inset: 0 auto 0 0; background: var(--muted); border-radius: 1px; }
+.gates .bar.on i { background: var(--signal); }
+.gates .bar::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--ink); opacity: .5; }
+.gates .p { font: 12px/1 var(--font-mono); text-align: right; color: var(--muted); }
+
+/* Signature: each numeric decision as a gauge rule with the digit-by-digit reading. */
+.gauge { border-top: 1px solid var(--rule); padding-top: 10px; }
+.gauge .head { display: flex; justify-content: space-between; align-items: baseline; }
+.gauge .name { font: 600 14px/1 var(--font-label); letter-spacing: .03em; }
+.gauge .value { font: 500 22px/1 var(--font-mono); color: var(--signal); }
+.gauge svg { display: block; width: 100%; height: 34px; margin: 6px 0 4px; overflow: visible; }
+.gauge svg .tick { stroke: var(--muted); }
+.gauge svg .neutral { stroke: var(--cool); stroke-width: 2; }
+.gauge svg .mark { fill: var(--signal); }
+.gauge svg text { font: 10px var(--font-mono); fill: var(--muted); }
+.digits { display: flex; gap: 3px; flex-wrap: wrap; align-items: flex-end; }
+.digits span { font: 500 14px/1 var(--font-mono); padding: 5px 5px 3px; border-radius: 2px; text-align: center;
+  background: color-mix(in srgb, var(--signal) calc(var(--p) * 60%), transparent); min-width: 22px; }
+.digits span small { display: block; font-size: 9px; color: var(--muted); margin-top: 3px; }
+.digits .end { font-size: 11px; color: var(--muted); }
+.choice-row { font-size: 13px; display: flex; justify-content: space-between; }
+.choice-row b { font-weight: 600; }
+.metrics { font: 12px/1.6 var(--font-mono); color: var(--muted); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gates .bar i { transition: width .4s ease; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Jev Photo Control</h1>
+  <p>The model only answers typed questions; code edits the pixels</p>
+  <span id="status">Connecting…</span>
+</header>
+<main>
+  <section class="stage" aria-label="Photo">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a photo">
+      <div><strong>Drop a photo here</strong><span>or click to choose one, or paste it</span></div>
+    </div>
+    <div class="compare" id="compare" hidden>
+      <div class="pane">
+        <img id="before" alt="Before">
+        <svg class="boxes" id="boxes" viewBox="0 0 1 1" preserveAspectRatio="none" hidden></svg>
+      </div>
+      <img id="after" class="after" alt="After" hidden>
+      <div class="handle" id="handle" hidden></div>
+      <span class="tag l" id="tagL" hidden>Before</span><span class="tag r" id="tagR" hidden>After</span>
+      <input type="range" id="split" min="0" max="100" value="50" aria-label="Comparison split position" hidden>
+    </div>
+    <div class="stage-bar" id="stageBar" hidden>
+      <label><input type="checkbox" id="showBoxes" checked> Show boxes located by the model</label>
+      <button class="secondary on-card" id="replace" type="button">Use another photo</button>
+    </div>
+    <div class="history" id="history" aria-label="Versions"></div>
+    <input type="file" id="file" accept="image/*" hidden>
+  </section>
+
+  <aside>
+    <form id="form">
+      <p class="label"><label for="instruction">Edit request</label></p>
+      <textarea id="instruction" placeholder="e.g. make it a bit brighter and warmer. Leave empty to auto-enhance."></textarea>
+      <div class="chips" id="chips">
+        <button type="button" data-v="">Auto-enhance</button>
+        <button type="button" data-v="make it a bit brighter">A bit brighter</button>
+        <button type="button" data-v="make it a bit warmer">Warmer</button>
+        <button type="button" data-v="convert to black and white">Black and white</button>
+        <button type="button" data-v="blur the background">Blur background</button>
+        <button type="button" data-v="crop tightly around the main subject">Crop to subject</button>
+        <button type="button" data-v="rotate 5 degrees clockwise">Rotate 5° clockwise</button>
+      </div>
+    </form>
+    <button class="primary" id="run" type="submit" form="form" disabled>Edit photo</button>
+    <p class="note" id="hint">Add a photo first. Each edit starts from the selected version.</p>
+    <p class="error" id="error" role="alert" hidden></p>
+    <a class="secondary" id="download" download="jev-photo.jpg" hidden>Download this version</a>
+
+    <section class="decisions" id="decisions" hidden aria-live="polite">
+      <div>
+        <p class="label">Which edits are needed (applied if P &gt; 0.5)</p>
+        <div class="gates" id="gates"></div>
+      </div>
+      <div id="readouts"></div>
+      <div class="metrics" id="metrics"></div>
+    </section>
+  </aside>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const NAMES = {exposure: "Exposure", contrast: "Contrast", saturation: "Saturation", warmth: "Warmth",
+  sharpness: "Sharpness", rotation: "Rotation", crop: "Crop", region: "Local edit"};
+// Same ranges and neutral values as jev_photo/edit/planner.py.
+const RANGES = {exposure: [0, 2, 1], contrast: [0, 2, 1], saturation: [0, 2, 1], warmth: [-1, 1, 0],
+  sharpness: [0, 4, 1], rotation: [-50, 50, 0]};
+const UNITS = {rotation: "°"};
+const OPS = {blur: "Blur", pixelate: "Pixelate", brighten: "Brighten", darken: "Darken", desaturate: "Desaturate"};
+
+let versions = [];   // {src, label, result}
+let current = -1;
+
+async function health() {
+  try {
+    const r = await (await fetch("/health")).json();
+    if (r.ready) { $("status").textContent = `${r.model} · ${r.devices.join(" + ")}`; $("status").className = "ready"; return; }
+  } catch (e) {}
+  $("status").textContent = "Loading model…"; setTimeout(health, 3000);
+}
+health();
+
+function loadFile(file) {
+  if (!file || !file.type.startsWith("image/")) return showError("Choose an image file.");
+  const reader = new FileReader();
+  reader.onload = () => { versions = [{src: reader.result, label: "Original", result: null}]; select(0); };
+  reader.readAsDataURL(file);
+}
+$("drop").onclick = () => $("file").click();
+$("drop").onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("file").click(); } };
+$("replace").onclick = () => $("file").click();
+$("file").onchange = () => loadFile($("file").files[0]);
+for (const ev of ["dragenter", "dragover"]) $("drop").addEventListener(ev, e => { e.preventDefault(); $("drop").classList.add("over"); });
+for (const ev of ["dragleave", "drop"]) $("drop").addEventListener(ev, e => { e.preventDefault(); $("drop").classList.remove("over"); });
+$("drop").addEventListener("drop", e => loadFile(e.dataTransfer.files[0]));
+document.addEventListener("paste", e => {
+  const item = [...e.clipboardData.items].find(i => i.type.startsWith("image/"));
+  if (item) loadFile(item.getAsFile());
+});
+
+$("chips").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  $("instruction").value = b.dataset.v; $("instruction").focus();
+};
+$("split").oninput = () => $("compare").style.setProperty("--split", $("split").value + "%");
+$("showBoxes").onchange = () => drawBoxes();
+
+function select(i) {
+  current = i;
+  const v = versions[i], parent = i > 0 ? versions[i - 1] : null;
+  $("drop").hidden = true; $("compare").hidden = false; $("stageBar").hidden = false; $("run").disabled = false;
+  $("hint").textContent = "Each edit starts from the selected version.";
+  const compare = !!v.result;
+  const p = compare ? v.result.params : null;
+  const side = compare && (p.crop || p.rotation);
+  $("compare").classList.toggle("side", !!side);
+  $("before").src = compare ? parent.src : v.src;
+  $("after").hidden = !compare; if (compare) $("after").src = v.src;
+  for (const id of ["tagL", "tagR"]) $(id).hidden = !compare;
+  for (const id of ["handle", "split"]) $(id).hidden = !compare || side;
+  $("download").hidden = false; $("download").href = v.src;
+  renderHistory(); drawBoxes(); renderDecisions(v.result);
+}
+
+function renderHistory() {
+  $("history").innerHTML = "";
+  if (versions.length < 2) return;
+  versions.forEach((v, i) => {
+    const b = document.createElement("button");
+    b.className = i === current ? "on" : ""; b.title = v.label; b.setAttribute("aria-label", `Version: ${v.label}`);
+    b.innerHTML = `<img src="${v.src}" alt=""><span>${i === 0 ? "orig" : "#" + i}</span>`;
+    b.onclick = () => select(i);
+    $("history").append(b);
+  });
+}
+
+function drawBoxes() {
+  const v = versions[current], svg = $("boxes");
+  const boxes = v && v.result ? v.result.boxes : {};
+  // SVGElement has no .hidden property; toggle the attribute.
+  svg.toggleAttribute("hidden", !$("showBoxes").checked || !Object.keys(boxes).length);
+  svg.innerHTML = "";
+  // Boxes are drawn on the "before" side, which is the image the model judged.
+  for (const [name, b] of Object.entries(boxes)) {
+    const [x0, y0, x1, y1] = b.box;
+    const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    Object.entries({x: x0, y: y0, width: x1 - x0, height: y1 - y0, fill: "none",
+      stroke: name === "crop" ? "#d6782a" : "#3f5ea8", "stroke-width": 3, "vector-effect": "non-scaling-stroke",
+      "stroke-dasharray": name === "crop" ? "none" : "8 5"}).forEach(([k, val]) => r.setAttribute(k, val));
+    svg.append(r);
+  }
+}
+
+function showError(msg) { $("error").textContent = msg; $("error").hidden = !msg; }
+
+$("form").onsubmit = async e => {
+  e.preventDefault();
+  if (current < 0) return;
+  const base = versions[current], instruction = $("instruction").value.trim();
+  $("run").disabled = true; $("run").textContent = "Reading the photo…"; showError("");
+  try {
+    const r = await fetch("/v1/edit", {method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({image: base.src, instruction})});
+    const body = await r.json();
+    if (!r.ok) throw new Error(typeof body.detail === "string" ? body.detail : JSON.stringify(body.detail));
+    versions = versions.slice(0, current + 1);
+    versions.push({src: body.image, label: instruction || "Auto-enhance", result: body});
+    select(versions.length - 1);
+  } catch (err) {
+    showError(`Edit failed: ${err.message}. Check the server log and try again.`);
+  } finally {
+    $("run").disabled = false; $("run").textContent = "Edit photo";
+  }
+};
+
+function fmt(x) { return Number.isInteger(x) ? String(x) : String(+x.toFixed(3)); }
+
+function gauge(name, a) {
+  const [lo, hi, neutral] = RANGES[name];
+  const pos = x => ((x - lo) / (hi - lo)) * 100;
+  let ticks = "";
+  for (let i = 0; i <= 10; i++) {
+    const x = lo + (hi - lo) * i / 10, major = i % 5 === 0;
+    ticks += `<line class="tick" x1="${i * 10}%" x2="${i * 10}%" y1="${major ? 8 : 12}" y2="18"/>`;
+    if (major) ticks += `<text x="${i * 10}%" y="31" text-anchor="${i === 0 ? "start" : i === 10 ? "end" : "middle"}">${fmt(x)}</text>`;
+  }
+  const digits = a.trace.map(t => `<span style="--p:${t.p.toFixed(3)}" class="${t.choice === "end" ? "end" : ""}"
+      title="After '${t.after}' chose ${t.choice}, P=${t.p.toFixed(2)}">${t.choice === "end" ? "end" : t.choice}<small>${t.p.toFixed(2)}</small></span>`).join("");
+  return `<div class="gauge">
+    <div class="head"><span class="name">${NAMES[name]}</span><span class="value">${fmt(a.value)}${UNITS[name] || ""}</span></div>
+    <svg role="img" aria-label="${NAMES[name]} ${fmt(a.value)}, range ${lo} to ${hi}, unchanged at ${neutral}">
+      <line class="tick" x1="0" x2="100%" y1="18" y2="18"/>${ticks}
+      <line class="neutral" x1="${pos(neutral)}%" x2="${pos(neutral)}%" y1="4" y2="18"/>
+      <svg x="${pos(a.value)}%" y="5" overflow="visible"><polygon class="mark" points="-5,0 5,0 0,9"/></svg>
+    </svg>
+    <div class="digits" aria-label="Characters written one by one, with probabilities">${digits}</div>
+  </div>`;
+}
+
+function renderDecisions(res) {
+  $("decisions").hidden = !res; if (!res) return;
+  $("gates").innerHTML = Object.entries(res.gates).map(([k, p]) =>
+    `<span>${NAMES[k]}</span><span class="bar ${p > 0.5 ? "on" : ""}"><i style="width:${(p * 100).toFixed(1)}%"></i></span><span class="p">${p.toFixed(2)}</span>`).join("");
+  let html = "";
+  for (const [k, a] of Object.entries(res.amounts)) if (a.type === "number" && RANGES[k]) html += gauge(k, a);
+  if (res.amounts.region_op) {
+    const op = res.amounts.region_op, where = res.amounts.region_where;
+    html += `<div class="gauge"><div class="head"><span class="name">Local edit</span><span class="value">${OPS[op.choice]}</span></div>
+      <div class="choice-row"><span>Applies to</span><b>${where.choice === "outside" ? "everything but the subject" : "inside the box"}</b></div>
+      <div class="choice-row"><span>P(${OPS[op.choice]})</span><b>${op.probabilities[op.choice].toFixed(2)}</b></div></div>`;
+  }
+  for (const [k, b] of Object.entries(res.boxes)) {
+    html += `<div class="gauge"><div class="head"><span class="name">${k === "crop" ? "Crop box" : "Local edit box"}</span>
+      <span class="value" style="font-size:14px">[${b.bbox_2d.join(", ")}]</span></div>
+      <p class="note">Native bbox_2d coordinates (0–1000), read digit by digit</p></div>`;
+  }
+  if (res.params.notes.length) html += `<p class="note">${res.params.notes.join("; ")}</p>`;
+  if (!html) html = `<p class="note">The model judged that no edit is needed.</p>`;
+  $("readouts").innerHTML = html;
+  const m = res.metrics;
+  $("metrics").textContent = `${m.total_ms.toFixed(0)} ms · ${m.sequential_rounds} sequential rounds · ` +
+    `${m.language_forward_calls} language forwards · ${m.vision_forward_calls} vision forward · ${m.device}`;
+}
+</script>
+</body>
+</html>

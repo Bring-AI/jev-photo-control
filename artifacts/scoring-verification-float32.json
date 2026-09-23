@@ -1,0 +1,38 @@
+{
+ "max_shared_vs_independent": 0.003467559814453125,
+ "max_shared_vs_stock_seq": 0.0005964846654968881,
+ "shared_metrics": {
+  "preprocessing_ms": 13.675734400749207,
+  "vision_ms": 225.0622734427452,
+  "prefill_ms": 595.9162525832653,
+  "scoring_ms": 1135.2501772344112,
+  "cache_fork_ms": 9.97636467218399,
+  "language_forward_calls": 3,
+  "vision_forward_calls": 1,
+  "mode": "shared",
+  "device": "cuda:1",
+  "elapsed_ms": 1457.7048011124134,
+  "prefix_tokens": 719,
+  "number_rounds": 1,
+  "generated_tokens": 0,
+  "peak_gpu_memory_gb": 38.71633664,
+  "decisions_per_second": 3.430049757800322
+ },
+ "independent_metrics": {
+  "preprocessing_ms": 147.1284069120884,
+  "vision_ms": 1809.5077760517597,
+  "prefill_ms": 5159.937083721161,
+  "scoring_ms": 7121.079318225384,
+  "cache_fork_ms": 0,
+  "language_forward_calls": 8,
+  "vision_forward_calls": 8,
+  "mode": "independent",
+  "device": "cuda:1",
+  "elapsed_ms": 7162.197045981884,
+  "prefix_tokens": null,
+  "number_rounds": 1,
+  "generated_tokens": 0,
+  "peak_gpu_memory_gb": 38.038974976,
+  "decisions_per_second": 0.6981098073537485
+ }
+}

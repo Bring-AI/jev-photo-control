@@ -1,0 +1,636 @@
+[
+ {
+  "photo": "cat",
+  "prompt": "blur the background",
+  "gates": {
+   "exposure": 0.068,
+   "contrast": 0.053,
+   "saturation": 0.042,
+   "warmth": 0.06,
+   "sharpness": 0.5,
+   "rotation": 0.047,
+   "crop": 0.053,
+   "region": 0.94
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 1.0,
+   "warmth": 0.0,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": null,
+   "region": {
+    "op": "blur",
+    "box": {
+     "x0": 0.108,
+     "y0": 0.304,
+     "x1": 0.807,
+     "y1": 0.717
+    },
+    "where": "outside"
+   },
+   "notes": []
+  },
+  "boxes": {
+   "region": {
+    "bbox_2d": [
+     108,
+     304,
+     807,
+     717
+    ],
+    "box": [
+     0.108,
+     0.304,
+     0.807,
+     0.717
+    ]
+   }
+  },
+  "amounts": {
+   "region_op": {
+    "type": "choice",
+    "choice": "blur",
+    "probabilities": {
+     "blur": 0.9959473920940844,
+     "pixelate": 0.0014973463434180482,
+     "brighten": 0.0019226307625332256,
+     "darken": 0.00022962549885024967,
+     "desaturate": 0.0004030053011139624
+    }
+   },
+   "region_where": {
+    "type": "choice",
+    "choice": "outside",
+    "probabilities": {
+     "inside": 0.020332353342658753,
+     "outside": 0.9796676466573412
+    }
+   }
+  },
+  "total_ms": 1863,
+  "sequential_rounds": 12
+ },
+ {
+  "photo": "cat",
+  "prompt": "crop tightly around the cat's face",
+  "gates": {
+   "exposure": 0.095,
+   "contrast": 0.06,
+   "saturation": 0.033,
+   "warmth": 0.068,
+   "sharpness": 0.202,
+   "rotation": 0.06,
+   "crop": 0.932,
+   "region": 0.469
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 1.0,
+   "warmth": 0.0,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": {
+    "x0": 0.108,
+    "y0": 0.361,
+    "x1": 0.384,
+    "y1": 0.716
+   },
+   "region": null,
+   "notes": []
+  },
+  "boxes": {
+   "crop": {
+    "bbox_2d": [
+     108,
+     361,
+     384,
+     716
+    ],
+    "box": [
+     0.108,
+     0.361,
+     0.384,
+     0.716
+    ]
+   }
+  },
+  "amounts": {},
+  "total_ms": 1756,
+  "sequential_rounds": 12
+ },
+ {
+  "photo": "cat",
+  "prompt": "make it black and white",
+  "gates": {
+   "exposure": 0.085,
+   "contrast": 0.202,
+   "saturation": 0.835,
+   "warmth": 0.165,
+   "sharpness": 0.165,
+   "rotation": 0.042,
+   "crop": 0.029,
+   "region": 0.06
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 0.0,
+   "warmth": 0.0,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": null,
+   "region": null,
+   "notes": []
+  },
+  "boxes": {},
+  "amounts": {
+   "saturation": {
+    "type": "number",
+    "value": 0.0,
+    "written": "0",
+    "trace": [
+     {
+      "after": "",
+      "choice": "0",
+      "p": 0.9304268184181356
+     },
+     {
+      "after": "0",
+      "choice": "end",
+      "p": 0.5926665999540697
+     }
+    ]
+   }
+  },
+  "total_ms": 646,
+  "sequential_rounds": 2
+ },
+ {
+  "photo": "taxi",
+  "prompt": "",
+  "gates": {
+   "exposure": 0.349,
+   "contrast": 0.622,
+   "saturation": 0.294,
+   "warmth": 0.245,
+   "sharpness": 0.407,
+   "rotation": 0.165,
+   "crop": 0.223,
+   "region": 0.042
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.2,
+   "saturation": 1.0,
+   "warmth": 0.0,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": null,
+   "region": null,
+   "notes": []
+  },
+  "boxes": {},
+  "amounts": {
+   "contrast": {
+    "type": "number",
+    "value": 1.2,
+    "written": "1.2",
+    "trace": [
+     {
+      "after": "",
+      "choice": "1",
+      "p": 0.8564525465056927
+     },
+     {
+      "after": "1",
+      "choice": ".",
+      "p": 0.9796676466573412
+     },
+     {
+      "after": "1.",
+      "choice": "2",
+      "p": 0.44822536659822904
+     },
+     {
+      "after": "1.2",
+      "choice": "end",
+      "p": 0.9906103682365056
+     }
+    ]
+   }
+  },
+  "total_ms": 720,
+  "sequential_rounds": 4
+ },
+ {
+  "photo": "taxi",
+  "prompt": "remove the orange color cast so it looks natural",
+  "gates": {
+   "exposure": 0.148,
+   "contrast": 0.245,
+   "saturation": 0.269,
+   "warmth": 0.651,
+   "sharpness": 0.165,
+   "rotation": 0.047,
+   "crop": 0.037,
+   "region": 0.085
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 1.0,
+   "warmth": -0.8,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": null,
+   "region": null,
+   "notes": []
+  },
+  "boxes": {},
+  "amounts": {
+   "warmth": {
+    "type": "number",
+    "value": -0.8,
+    "written": "-0.8",
+    "trace": [
+     {
+      "after": "",
+      "choice": "-",
+      "p": 0.8467370742927951
+     },
+     {
+      "after": "-",
+      "choice": "0",
+      "p": 0.981767728571737
+     },
+     {
+      "after": "-0",
+      "choice": ".",
+      "p": 0.9997694932780068
+     },
+     {
+      "after": "-0.",
+      "choice": "8",
+      "p": 0.44827933804221376
+     },
+     {
+      "after": "-0.8",
+      "choice": "end",
+      "p": 0.811397806660474
+     }
+    ]
+   }
+  },
+  "total_ms": 742,
+  "sequential_rounds": 5
+ },
+ {
+  "photo": "taxi",
+  "prompt": "blur everything except the yellow taxi in front",
+  "gates": {
+   "exposure": 0.119,
+   "contrast": 0.119,
+   "saturation": 0.133,
+   "warmth": 0.165,
+   "sharpness": 0.469,
+   "rotation": 0.068,
+   "crop": 0.119,
+   "region": 0.932
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 1.0,
+   "warmth": 0.0,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": null,
+   "region": {
+    "op": "blur",
+    "box": {
+     "x0": 0.442,
+     "y0": 0.31,
+     "x1": 1.0,
+     "y1": 1.0
+    },
+    "where": "outside"
+   },
+   "notes": []
+  },
+  "boxes": {
+   "region": {
+    "bbox_2d": [
+     442,
+     310,
+     1000,
+     1000
+    ],
+    "box": [
+     0.442,
+     0.31,
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "amounts": {
+   "region_op": {
+    "type": "choice",
+    "choice": "blur",
+    "probabilities": {
+     "blur": 0.9817244336828754,
+     "pixelate": 0.008493580573680454,
+     "brighten": 0.004012083376017486,
+     "darken": 0.0012236162963174268,
+     "desaturate": 0.004546286071109344
+    }
+   },
+   "region_where": {
+    "type": "choice",
+    "choice": "outside",
+    "probabilities": {
+     "inside": 0.18242552380635632,
+     "outside": 0.8175744761936437
+    }
+   }
+  },
+  "total_ms": 1959,
+  "sequential_rounds": 14
+ },
+ {
+  "photo": "lake",
+  "prompt": "make it warmer, like golden hour",
+  "gates": {
+   "exposure": 0.245,
+   "contrast": 0.294,
+   "saturation": 0.321,
+   "warmth": 0.852,
+   "sharpness": 0.165,
+   "rotation": 0.042,
+   "crop": 0.053,
+   "region": 0.068
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 1.0,
+   "warmth": 0.8,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": null,
+   "region": null,
+   "notes": []
+  },
+  "boxes": {},
+  "amounts": {
+   "warmth": {
+    "type": "number",
+    "value": 0.8,
+    "written": "0.8",
+    "trace": [
+     {
+      "after": "",
+      "choice": "0",
+      "p": 0.9118941361581039
+     },
+     {
+      "after": "0",
+      "choice": ".",
+      "p": 0.9465966702001757
+     },
+     {
+      "after": "0.",
+      "choice": "8",
+      "p": 0.80165140122406
+     },
+     {
+      "after": "0.8",
+      "choice": "end",
+      "p": 0.7940083317166806
+     }
+    ]
+   }
+  },
+  "total_ms": 663,
+  "sequential_rounds": 4
+ },
+ {
+  "photo": "lake",
+  "prompt": "crop to the snowy mountain and its reflection",
+  "gates": {
+   "exposure": 0.148,
+   "contrast": 0.095,
+   "saturation": 0.076,
+   "warmth": 0.133,
+   "sharpness": 0.202,
+   "rotation": 0.107,
+   "crop": 0.893,
+   "region": 0.148
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 1.0,
+   "warmth": 0.0,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": {
+    "x0": 0.158,
+    "y0": 0.411,
+    "x1": 0.411,
+    "y1": 0.851
+   },
+   "region": null,
+   "notes": []
+  },
+  "boxes": {
+   "crop": {
+    "bbox_2d": [
+     158,
+     411,
+     411,
+     851
+    ],
+    "box": [
+     0.158,
+     0.411,
+     0.411,
+     0.851
+    ]
+   }
+  },
+  "amounts": {},
+  "total_ms": 1156,
+  "sequential_rounds": 12
+ },
+ {
+  "photo": "lake",
+  "prompt": "make the colors more vivid",
+  "gates": {
+   "exposure": 0.119,
+   "contrast": 0.349,
+   "saturation": 0.967,
+   "warmth": 0.223,
+   "sharpness": 0.165,
+   "rotation": 0.033,
+   "crop": 0.033,
+   "region": 0.047
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 1.3,
+   "warmth": 0.0,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": null,
+   "region": null,
+   "notes": []
+  },
+  "boxes": {},
+  "amounts": {
+   "saturation": {
+    "type": "number",
+    "value": 1.3,
+    "written": "1.3",
+    "trace": [
+     {
+      "after": "",
+      "choice": "1",
+      "p": 0.9785667555905417
+     },
+     {
+      "after": "1",
+      "choice": ".",
+      "p": 0.991422514586288
+     },
+     {
+      "after": "1.",
+      "choice": "3",
+      "p": 0.7810966662451337
+     },
+     {
+      "after": "1.3",
+      "choice": "end",
+      "p": 0.7443882830520016
+     }
+    ]
+   }
+  },
+  "total_ms": 694,
+  "sequential_rounds": 4
+ },
+ {
+  "photo": "beach",
+  "prompt": "",
+  "gates": {
+   "exposure": 0.182,
+   "contrast": 0.378,
+   "saturation": 0.148,
+   "warmth": 0.095,
+   "sharpness": 0.349,
+   "rotation": 0.148,
+   "crop": 0.165,
+   "region": 0.033
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 1.0,
+   "warmth": 0.0,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": null,
+   "region": null,
+   "notes": []
+  },
+  "boxes": {},
+  "amounts": {},
+  "total_ms": 463,
+  "sequential_rounds": 0
+ },
+ {
+  "photo": "beach",
+  "prompt": "darken the bright sky",
+  "gates": {
+   "exposure": 0.165,
+   "contrast": 0.223,
+   "saturation": 0.148,
+   "warmth": 0.119,
+   "sharpness": 0.182,
+   "rotation": 0.037,
+   "crop": 0.053,
+   "region": 0.245
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 1.0,
+   "warmth": 0.0,
+   "sharpness": 1.0,
+   "rotation": 0.0,
+   "crop": null,
+   "region": null,
+   "notes": []
+  },
+  "boxes": {},
+  "amounts": {},
+  "total_ms": 452,
+  "sequential_rounds": 0
+ },
+ {
+  "photo": "beach",
+  "prompt": "rotate 3 degrees counter-clockwise",
+  "gates": {
+   "exposure": 0.085,
+   "contrast": 0.053,
+   "saturation": 0.047,
+   "warmth": 0.068,
+   "sharpness": 0.133,
+   "rotation": 0.835,
+   "crop": 0.119,
+   "region": 0.053
+  },
+  "params": {
+   "exposure": 1.0,
+   "contrast": 1.0,
+   "saturation": 1.0,
+   "warmth": 0.0,
+   "sharpness": 1.0,
+   "rotation": 3.0,
+   "crop": null,
+   "region": null,
+   "notes": []
+  },
+  "boxes": {},
+  "amounts": {
+   "rotation": {
+    "type": "number",
+    "value": 3.0,
+    "written": "3.0",
+    "trace": [
+     {
+      "after": "",
+      "choice": "3",
+      "p": 0.8089476352996338
+     },
+     {
+      "after": "3",
+      "choice": ".",
+      "p": 0.730594881155465
+     },
+     {
+      "after": "3.",
+      "choice": "0",
+      "p": 0.9880430229772371
+     }
+    ]
+   }
+  },
+  "total_ms": 766,
+  "sequential_rounds": 3
+ }
+]
